@@ -31,16 +31,11 @@ import time
 def init():
     # init osc
     osc.init()
-    #os.chdir(codeDir)
-    codeDir, filename = osc.__file__.rsplit(os.sep, 1)
-    codeDir = os.path.abspath(codeDir)
-    exe_path = os.path.join(codeDir, "osc", "chuck")
-    # "C:\\Python24\\Lib\\site-packages\\myro\\file.py"
     # start chuck
     if os.name in ['nt', 'dos', 'os2']:
-        os.system("start \"%s\" oscrecv" % exe_path)
+        os.system("start chuck oscrecv")
     elif os.name in ['posix']:
-        os.system("\"%s\" oscrecv &" % exe_path)
+        os.system("chuck oscrecv &")
     else:
         raise AttributeError("your operating system (%s) is not currently supported" % os.name)
 
