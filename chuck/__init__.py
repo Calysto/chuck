@@ -1,3 +1,5 @@
+from __future__ import division, print_function
+
 # chuck - a music creation library
 #
 # Copyright (c) 2016 Douglas S. Blank <dblank@cs.brynmawr.edu>
@@ -22,6 +24,9 @@ __version__ = "0.0.1"
 from . import osc 
 import os
 import time
+import random
+import threading
+import traceback
 
 # ChucK unit generator documentation at
 # http://chuck.cs.princeton.edu/doc/program/ugen_full.html
@@ -31,13 +36,16 @@ import time
 def init():
     # init osc
     osc.init()
+    #directory, filename = os.path.split(__file__)
+    #chuck_ck = os.path.abspath(
+    #    os.path.join(directory, "osc", "oscrecv.ck"))
     # start chuck
-    if os.name in ['nt', 'dos', 'os2']:
-        os.system("start chuck oscrecv")
-    elif os.name in ['posix']:
-        os.system("chuck oscrecv &")
-    else:
-        raise AttributeError("your operating system (%s) is not currently supported" % os.name)
+    #if os.name in ['nt', 'dos', 'os2']:
+    #    os.system("start chuck --port:9000 \"%s\" " % chuck_ck)
+    #elif os.name in ['posix']:
+    #    os.system("/home/dblank/chuck/chuck-1.3.5.2/src/chuck --port:9000 \"%s\" &" % chuck_ck)
+    #else:
+    #    raise AttributeError("your operating system (%s) is not currently supported" % os.name)
 
 # base instrument class (not to be instantiated)
 class Instrument:
@@ -608,5 +616,169 @@ class FileRead(Instrument):
         if loopsPerSecond > 0:
             osc.sendMsg("/inst/sndbuf/loopRate", [loopsPerSecond * 1.0])
             
-    
 # The end, for now
+
+def timer(seconds=0):
+    """ A function to be used with 'for' """
+    start = time.time()
+    while True:
+        timepast = time.time() - start
+        if seconds != 0 and timepast > seconds:
+            raise StopIteration()
+        yield round(timepast, 3)
+
+_timers = {}
+def timeRemaining(seconds=0):
+    """ Function to be used with 'while' """
+    global _timers
+    if seconds == 0: return True
+    now = time.time()
+    stack = traceback.extract_stack()
+    filename, line_no, q1, q2 = stack[-2]
+    if filename.startswith("<pyshell"):
+        filename = "pyshell"
+    if (filename, line_no) not in _timers:
+        _timers[(filename, line_no)] = (now, seconds)
+        return True
+    start, duration = _timers[(filename, line_no)]
+    if seconds != duration:
+        _timers[(filename, line_no)] = (now, seconds)
+        return True
+    if now - start > duration:
+        del _timers[(filename, line_no)]
+        return False
+    else:
+        return True
+
+def wait(seconds):
+    """
+    Wrapper for time.sleep() so that we may later overload.
+    """
+    return time.sleep(seconds)
+
+def now():
+    """
+    Returns current time in seconds since 
+    """
+    return time.time()
+
+def pickone(*args):
+    """
+    Randomly pick one of a list, or one between [0, arg).
+    """
+    if len(args) == 1:
+        return random.randrange(args[0])
+    else:
+        return args[random.randrange(len(args))]
+
+def pickone_range(start, stop):
+    """
+    Randomly pick one of a list, or one between [0, arg).
+    """
+    return random.randrange(start, stop)
+
+def heads(): return flipCoin() == "heads"
+def tails(): return flipCoin() == "tails"
+
+def flipCoin():
+    """
+    Randomly returns "heads" or "tails".
+    """
+    return ("heads", "tails")[random.randrange(2)]
+
+def randomNumber():
+    """
+    Returns a number between 0 (inclusive) and 1 (exclusive).
+    """
+    return random.random()
+
+class BackgroundThread(threading.Thread):
+    """
+    A thread class for running things in the background.
+    """
+    def __init__(self, function, pause = 0.01):
+        """
+        Constructor, setting initial variables
+        """
+        self.function = function
+        self._stopevent = threading.Event()
+        self._sleepperiod = pause
+        threading.Thread.__init__(self, name="MyroThread")
+        
+    def run(self):
+        """
+        overload of threading.thread.run()
+        main control loop
+        """
+        while not self._stopevent.isSet():
+            self.function()
+            #self._stopevent.wait(self._sleepperiod)
+
+    def join(self,timeout=None):
+        """
+        Stop the thread
+        """
+        self._stopevent.set()
+        threading.Thread.join(self, timeout)
+
+def loop(*functions):
+    """
+    Calls each of the given functions sequentially, N times.
+    Example:
+
+    >>> loop(f1, f2, 10)
+    will call f1() then f2(), 10 times.
+    """
+    assert len(functions) > 1,"loop: takes 1 (or more) functions and an integer"
+    assert type(functions[-1]) == int, "loop: last parameter must be an integer"
+    count = functions[-1]
+    for i in range(count):
+        for function in functions[:-1]:
+            print("   loop #%d: running %s()... " % (i + 1, function.__name__), 
+end="")
+            try:
+                retval = function()
+            except TypeError:
+                retval = function(i + 1)
+            if retval:
+                print(" => %s" % retval)
+            else:
+                print("")
+    stop()
+    return "ok"
+
+def doTogether(*functions):
+    """
+    Runs each of the given functions at the same time.
+    Example:
+
+    >>> doTogether(f1, f2, f3)
+    will call f1() f2() and f3() together.
+    """
+    thread_results = [None] * len(functions)
+    def makeThread(function, position):
+        def newfunction():
+            result = function()
+            thread_results[position] = result
+            return result
+        import threading
+        thread = threading.Thread()
+        thread.run = newfunction
+        return thread
+    assert len(functions) >= 2, "doTogether: takes 2 (or more) functions"
+    thread_list = []
+    # first make the threads:
+    for i in range(len(functions)):
+        thread_list.append(makeThread(functions[i], i))
+    # now, start them:
+    for thread in thread_list:
+        thread.start()
+    # wait for them to finish:
+    for thread in thread_list:
+        thread.join()
+    if thread_results == [None] * len(functions):
+        print('ok')
+    else:
+        return thread_results
+
+

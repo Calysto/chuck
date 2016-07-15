@@ -1,5 +1,5 @@
-#!/usr/bin/python
-#
+from __future__ import print_function
+
 # Open SoundControl for Python
 # Copyright (C) 2002 Daniel Holth, Clinton McChesney
 #
@@ -36,6 +36,7 @@ import sys
 import string
 import pprint
 
+PY3 = (sys.version_info[0] >= 3)
 
 def hexDump(bytes):
     """Useful utility; prints the string in hexadecimal"""
@@ -44,8 +45,10 @@ def hexDump(bytes):
         if (i+1) % 8 == 0:
             print(repr(bytes[i-7:i+1]))
 
-    if(len(bytes) % 8 != 0):
-        print(string.rjust("", 11), repr(bytes[i-len(bytes)%8:i+1]))
+    remainder = len(bytes) % 8
+    if(remainder != 0):
+        print(string.rjust("", (8-remainder)*3 - 1), 
+              repr(bytes[i-len(bytes)%8:i+1]))
 
 
 class OSCMessage:
@@ -179,20 +182,23 @@ def OSCArgument(next):
 
     if type(next) == type(""):
         OSCstringLength = math.ceil((len(next)+1) / 4.0) * 4
-        binary  = bytes.decode(struct.pack(">%ds" % (OSCstringLength), bytes(next, "utf-8")))
+        if PY3:
+            binary  = struct.pack(">%ds" % (OSCstringLength), bytes(next, "utf-8"))
+        else:
+            binary  = struct.pack(">%ds" % (OSCstringLength), next)
         tag = "s"
     elif type(next) == type(42.5):
-        binary  = bytes.decode(struct.pack(">f", next))
+        binary  = struct.pack(">f", next)
         tag = "f"
     elif type(next) == type(13):
-        binary  = bytes.decode(struct.pack(">i", next))
+        binary  = struct.pack(">i", next)
         tag = "i"
     else:
         binary  = ""
         tag = ""
-
+    if PY3 and binary:
+        binary = str(binary)[2:-1]
     return (tag, binary)
-
 
 def parseArgs(args):
     """Given a list of strings, produces a list
@@ -260,7 +266,9 @@ class CallbackManager:
     def handle(self, data, source = None):
         """Given OSC data, tries to call the callback with the
         right address."""
+        #print("CallbackManager handle():")
         decoded = decodeOSC(data)
+        #print("    received:", repr(decoded))
         self.dispatch(decoded, source)
 
     def dispatch(self, message, source = None):
@@ -275,6 +283,8 @@ class CallbackManager:
                 # smells like nested messages
                 for msg in message :
                     self.dispatch(msg, source)
+            else:
+                raise("Error!")
 
         except KeyError as e:
             # address not found
@@ -303,16 +313,9 @@ class CallbackManager:
         for message in messages[2:]:
             self.dispatch(message)
 
-
-
-
-
-
-
-
-if __name__ == "__main__":
+def main():
     hexDump("Welcome to the OSC testing program.")
-    print
+    print()
     message = OSCMessage()
     message.setAddress("/foo/play")
     message.append(44)
@@ -405,3 +408,6 @@ if __name__ == "__main__":
 
     print("sending a bundle to the callback manager")
     c.handle(bundlebinary)
+
+if __name__ == "__main__":
+    main()
