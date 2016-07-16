@@ -93,9 +93,11 @@ def createBinaryMsg(oscAddress, dataArray):
     for x in dataArray:  ## append each item of the array to the message
         m.append(x)
     if PY3:
-        return str.encode(m.getBinary()) # get the actual OSC to send
+        binary = str.encode(m.getBinary(), "latin1") # get the actual OSC to send
     else:
-        return m.getBinary() # get the actual OSC to send
+        binary = m.getBinary() # get the actual OSC to send
+    #print("createBinaryMsg:", repr(binary))
+    return binary
 
 ################################ receive osc from The Other.
 

@@ -35,6 +35,7 @@ import math
 import sys
 import string
 import pprint
+import codecs
 
 PY3 = (sys.version_info[0] >= 3)
 
@@ -183,21 +184,22 @@ def OSCArgument(next):
     if type(next) == type(""):
         OSCstringLength = math.ceil((len(next)+1) / 4.0) * 4
         if PY3:
-            binary  = struct.pack(">%ds" % (OSCstringLength), bytes(next, "utf-8"))
+            binary  = struct.pack(">%ds" % (OSCstringLength), bytes(next, "latin1"))
         else:
             binary  = struct.pack(">%ds" % (OSCstringLength), next)
         tag = "s"
     elif type(next) == type(42.5):
-        binary  = struct.pack(">f", next)
+        binary  = struct.pack(">f", float(next))
         tag = "f"
     elif type(next) == type(13):
-        binary  = struct.pack(">i", next)
+        binary  = struct.pack(">i", int(next))
         tag = "i"
     else:
         binary  = ""
         tag = ""
     if PY3 and binary:
-        binary = str(binary)[2:-1]
+        binary = "".join(map(chr, binary)) 
+    #print("OSCArgument:", repr(binary))
     return (tag, binary)
 
 def parseArgs(args):
