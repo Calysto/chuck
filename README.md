@@ -22,7 +22,7 @@ You can download chuck from: http://chuck.stanford.edu/release/
 
 Example command to start server:
 
-chuck.also --verbose:9 --port:9000 chuck/osc/oscrecv.ck
+chuck.alsa --verbose:9 --port:9000 chuck/osc/oscrecv.ck
 
 In another terminal, you can then run any of the example Python scripts.
 
