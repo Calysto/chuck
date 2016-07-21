@@ -205,29 +205,29 @@ Collisions of multiple independent sound-producing objects
 * ```setDecay(**decay**)```: set system decay (0.0 <= **decay** <= 1.0)
 * ```setObjects(**numObjects**)```: set number of objects (0 <= **numObjects** <= 128)
 * ```preset(**number**)```: change the settings to a preset instrument by number (0 <= **number** <= 22). Below is a list of preset instruments and what number to use for each: 
-** Maraca = 0
-** Cabasa = 1
-** Sekere = 2
-** Guiro = 3
-** Water Drops = 4
-** Bamboo Chimes = 5
-** Tambourine = 6
-** Sleigh Bells = 7
-** Sticks = 8
-** Crunch = 9
-** Wrench = 10
-** Sand Paper = 11
-** Coke Can = 12
-** Next Mug = 13
-** Penny + Mug = 14
-** Nickle + Mug = 15
-** Dime + Mug = 16
-** Quarter + Mug = 17
-** Franc + Mug = 18
-** Peso + Mug = 19
-** Big Rocks = 20
-** Little Rocks = 21
-** Tuned Bamboo Chimes = 22
+ * Maraca = 0
+ * Cabasa = 1
+ * Sekere = 2
+ * Guiro = 3
+ * Water Drops = 4
+ * Bamboo Chimes = 5
+ * Tambourine = 6
+ * Sleigh Bells = 7
+ * Sticks = 8
+ * Crunch = 9
+ * Wrench = 10
+ * Sand Paper = 11
+ * Soda Can = 12
+ * Next Mug = 13
+ * Penny + Mug = 14
+ * Nickle + Mug = 15
+ * Dime + Mug = 16
+ * Quarter + Mug = 17
+ * Franc + Mug = 18
+ * Peso + Mug = 19
+ * Big Rocks = 20
+ * Little Rocks = 21
+ * Tuned Bamboo Chimes = 22
 
 #### Saxophone
 A saxophone or similar wind instrument (**Saxofony** in ChucK)
@@ -262,15 +262,15 @@ Struck bar instruments (**ModalBar** in ChucK)
 * ```damp(**amount**)```: damp the bar (0.0 <= **amount** <= 1.0)
 * ```setMode(**mode**, **ratio**, **radius**, **gain**)```: set mode info (**mode** is 0 or 1, **ratio** >= 0.0, 0.0 <= **radius** <= 1.0, 0.0 <= **gain** <= 1.0)
 * ```preset(**instrumentNumber**)```: change the settings to a preset instrument by number (0 <= **instrumentNumber** <= 8). Below is a list of preset instruments and what number to use for each:
-** Marimba = 0
-** Vibraphone = 1
-** Agogo = 2
-** Wood1 = 3
-** Reso = 4
-** Wood2 = 5
-** Beats = 6
-** Two Fixed = 7
-** Clump = 8
+ * Marimba = 0
+ * Vibraphone = 1
+ * Agogo = 2
+ * Wood1 = 3
+ * Reso = 4
+ * Wood2 = 5
+ * Beats = 6
+ * Two Fixed = 7
+ * Clump = 8
 
 ### BlowBottle
 A blown bottle (**BlowBotl** in ChucK)
