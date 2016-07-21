@@ -1,8 +1,8 @@
-## Getting started
+## Chuck Interface
 
-Before you can write programs in chuck, you need to have a chuck server running.
+NOTE: Before you can write programs in chuck, you need to have a chuck server running. See https://github.com/Calysto/chuck/blob/master/README.md
 
-Now import the Myro and ChucK modules:
+Import the ChucK modules:
 
 ```python
 from chuck import *
@@ -27,7 +27,7 @@ The second line connects **s** to your computer's sound output device (speakers 
 
 NOTE: under Windows, a window may ask you for permission to connect. You only need to select ```unblock``` once.
 
-As a result of making the connection, you hear a sine tone playing on and on. It sounds a little like the Myro beep(), except that it keeps going until you make it stop. How do you make it stop? By disconnecting it from your sound output device.
+As a result of making the connection, you hear a sine tone playing on and on. How do you make it stop? By disconnecting it from your sound output device.
 
 ```python
 s.disconnect()
@@ -117,10 +117,10 @@ man.disconnect()
 
 * ```connect()```: connect to sound output device
 * ```disconnect()```: disconnect from sound output device
-* ```noteOn(**velocity**)```: start playing a note / making sound (0.0 <= **velocity** <= 1.0)
-* ```noteOff(**velocity**)```: stop playing a note / making sound (0.0 <= **velocity** <= 1.0)
-* ```setGain(**gain**)```: set gain to the given value (**gain** >= 0.0)
-* ```setFrequency(**freq**)```: set frequency to the given value (**freq** is in Hertz)
+* ```noteOn(velocity)```: start playing a note / making sound (0.0 <= **velocity** <= 1.0)
+* ```noteOff(velocity)```: stop playing a note / making sound (0.0 <= **velocity** <= 1.0)
+* ```setGain(gain)```: set gain to the given value (**gain** >= 0.0)
+* ```setFrequency(freq)```: set frequency to the given value (**freq** is in Hertz)
 
 These are enough to get you started on any of the available instruments. (Currently available: SineWave, Mandolin, FMVoices, Voice, PluckedString, Sitar, Shakers, Saxophone, MoogSynthesizer, StruckBar, BlowBottle, BlowHole, and Bowed.) 
 
@@ -146,7 +146,7 @@ sw.connect()
 #### Mandolin
 A mandolin
 
-* ```pluck(**strength**)```: pluck the mandolin (0.0 <= **strength** <= 1.0)
+* ```pluck(strength)```: pluck the mandolin (0.0 <= **strength** <= 1.0)
 
 Example:
 
@@ -159,9 +159,9 @@ m.pluck(1)
 #### FMVoices
 A voice synthesizer
 
-* ```setVowel(**vowel**)```: set the vowel given a numerical value (0.0 <= **vowel** <= 1.0)
-* ```setSpectralTilt(**spectralTilt**)```: set spectral tilt (related to loudness) (0.0 <= **spectralTilt** <= 1.0)
-* ```setAdsrTarget(**target**)```: set ADSR targets (related to how the sound changes over time) (0.0 <= **target** <= 1.0)
+* ```setVowel(vowel)```: set the vowel given a numerical value (0.0 <= **vowel** <= 1.0)
+* ```setSpectralTilt(spectralTilt)```: set spectral tilt (related to loudness) (0.0 <= **spectralTilt** <= 1.0)
+* ```setAdsrTarget(target)```: set ADSR targets (related to how the sound changes over time) (0.0 <= **target** <= 1.0)
 
 Example:
 
@@ -173,16 +173,16 @@ fmv.setVowel(0.5)
 #### Voice
 Another voice synthesizer (**VoicForm** in ChucK)
 
-* ```setPhoneme(**phoneme**)```: set the phoneme to the given string value (**phoneme** in ["eee", "ihh", "ehh", "aaa", "ahh", "aww", "ohh", "uhh", "uuu", "ooo", "rrr", "lll", "mmm", "nnn", "nng", "ngg", "fff", "sss", "thh", "shh", "xxx", "hee", "hoo", "hah", "bbb", "ddd", "jjj", "ggg"])
-* ```setPhonemeNumber(**number**)```: set the phoneme given a number value (0 <= **number <= 128)
-* ```sing(**floatValue**)```: re-start singing (0.0 <= **floatValue** <= 1.0)
-* ```quiet(**floatValue**)```: stop singing (0.0 <= **floatValue** <= 1.0)
-* ```setVoiced(**mix**)```: set mix for voiced component of the sound (0.0 <= **mix** <= 1.0)
-* ```setUnvoiced(**mix**)```: set mix for unvoiced component of the sound (0.0 <= **mix** <= 1.0)
-* ```setVoiceMix(**mix**)```: set voiced/unvoiced mix together (0.0 <= **mix** <= 1.0)
-* ```setPitchSweepRate(**rate**)```: set pitch sweep (0.0 <= **rate** <= 1.0)
-* ```setVibrato(**freq**, **gain**)```: set frequency and gain of vibrato (**frequency** in Hertz, 0.0 <= **gain** <= 1.0)
-* ```setLoudness(**loudness**)```: set the perceived loudness (0.0 <= **loudness** <= 1.0)
+* ```setPhoneme(phoneme)```: set the phoneme to the given string value (**phoneme** in ["eee", "ihh", "ehh", "aaa", "ahh", "aww", "ohh", "uhh", "uuu", "ooo", "rrr", "lll", "mmm", "nnn", "nng", "ngg", "fff", "sss", "thh", "shh", "xxx", "hee", "hoo", "hah", "bbb", "ddd", "jjj", "ggg"])
+* ```setPhonemeNumber(number)```: set the phoneme given a number value (0 <= **number <= 128)
+* ```sing(floatValue)```: re-start singing (0.0 <= **floatValue** <= 1.0)
+* ```quiet(floatValue)```: stop singing (0.0 <= **floatValue** <= 1.0)
+* ```setVoiced(mix)```: set mix for voiced component of the sound (0.0 <= **mix** <= 1.0)
+* ```setUnvoiced(mix)```: set mix for unvoiced component of the sound (0.0 <= **mix** <= 1.0)
+* ```setVoiceMix(mix)```: set voiced/unvoiced mix together (0.0 <= **mix** <= 1.0)
+* ```setPitchSweepRate(rate)```: set pitch sweep (0.0 <= **rate** <= 1.0)
+* ```setVibrato(freq**, gain)```: set frequency and gain of vibrato (**frequency** in Hertz, 0.0 <= **gain** <= 1.0)
+* ```setLoudness(loudness)```: set the perceived loudness (0.0 <= **loudness** <= 1.0)
 
 #### PluckedString
 A Karplus-Strong plucked string model (**StifKarp** in ChucK)
