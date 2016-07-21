@@ -2,7 +2,7 @@
 
 Music creation library in Python built on ChucK
 
-See examples in examples folder.
+See examples in examples folder, and documentation in https://github.com/Calysto/chuck/blob/master/docs/API.md
 
 Currently requires that modern chuck server (e.g., 1.3.5.2) be installed and running. 
 
