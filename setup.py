@@ -24,6 +24,7 @@ setup(name='chuck',
       install_requires=['IPython>=3.0'],
       packages=find_packages(include=['chuck', 'chuck.*']),
       include_data_files = True,
+      zip_safe=False,
       classifiers=[
           'Framework :: IPython',
           'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
